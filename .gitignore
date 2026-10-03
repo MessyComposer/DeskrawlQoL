@@ -1,0 +1,8 @@
+bin/
+obj/
+dist/
+.cache/
+.vs/
+.vscode/
+*.user
+GameDir.props.user

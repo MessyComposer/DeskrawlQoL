@@ -1,0 +1,16 @@
+<Project>
+  <!--
+    Where the game is installed. Resolution order:
+      1. GameDir.props.user next to this file (gitignored, per machine)
+      2. DESKRAWL_DIR environment variable
+      3. Default Steam library path
+  -->
+  <Import Project="$(MSBuildThisFileDirectory)GameDir.props.user" Condition="Exists('$(MSBuildThisFileDirectory)GameDir.props.user')" />
+
+  <PropertyGroup>
+    <GameDir Condition="'$(GameDir)' == '' and '$(DESKRAWL_DIR)' != ''">$(DESKRAWL_DIR)</GameDir>
+    <GameDir Condition="'$(GameDir)' == ''">C:\Program Files (x86)\Steam\steamapps\common\Deskrawl</GameDir>
+    <!-- Copy the built plugin into the game's BepInEx\plugins after each build. -->
+    <DeployToGame Condition="'$(DeployToGame)' == ''">true</DeployToGame>
+  </PropertyGroup>
+</Project>
