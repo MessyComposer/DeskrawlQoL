@@ -23,6 +23,14 @@ Drag the panel by its title row to move it.
 
 **Known limitation:** kills from the *Execute* talent remove HP without going through the game's normal damage path, so the meter doesn't count them.
 
+### Auto next stage
+
+Adds an **Auto next stage** toggle next to the game's auto-replay toggles: on the stage-complete screen (above auto-replay) and in the combat settings (below auto-rerun). Both control the same setting. When it's on and there is a next stage, the screen counts down (same delay as auto-replay) and moves on to the next stage, just like clicking **Next Stage**.
+
+- Takes priority over auto-replay while a next stage exists. On the last unlocked stage, auto-replay works as usual, so turning on both means "push forward, then farm the furthest stage".
+- Turning it off during the countdown hands the screen back to auto-replay.
+- The toggle state is remembered (`[AutoNextStage] Enabled`).
+
 ## Install
 
 1. Download `DeskrawlQoL-vX.Y.Z.zip` from the releases page.
@@ -50,6 +58,7 @@ Settings are in `BepInEx\config\deskrawl.qol.cfg`, which is created after the fi
 - `[DpsMeter]` holds hotkeys, combat timeout and rolling window. Hotkeys use the format `Alt+O`, `Ctrl+Shift+M` or `Alt+1`.
 - **Pick hotkeys the game doesn't use.** The game ignores Ctrl/Shift/Alt, so `Alt+R` would also trigger its R action (return to town). On startup the mod lists the game's keys in `BepInEx\LogOutput.log` (`Game keys: ...`) and warns about any conflicting hotkey. Keys in use: WASD, arrow keys, C, E, I, J, L, M, R, T, 1, 2, Space, Enter, Shift, Esc, plus your boss key.
 - `[DpsMeter.Overlay]` holds visibility, font size, position and breakdown rows.
+- `[AutoNextStage]` holds the toggle state and its label text.
 
 ## Troubleshooting
 
