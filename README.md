@@ -31,6 +31,19 @@ Adds an **Auto next stage** toggle next to the game's auto-replay toggles: on th
 - Turning it off during the countdown hands the screen back to auto-replay.
 - The toggle state is remembered (`[AutoNextStage] Enabled`).
 
+### Gold / XP per hour
+
+A small draggable panel with **gold/hour**, **XP/hour**, gold and XP gained this session, and an estimate of the **time to your next level** at the current rate.
+
+- Gold counts income only. Spending doesn't lower it. Selling items and offline rewards count as income, so press reset after collecting offline rewards for a clean rate.
+- XP is counted correctly across level-ups.
+- Rates use real time since the session started, so time spent in menus or paused counts too.
+
+| Hotkey | Action |
+|---|---|
+| `Alt+G` | Show/hide the panel |
+| `Alt+N` | Start a new session (reset) |
+
 ## Install
 
 1. Download `DeskrawlQoL-vX.Y.Z.zip` from the releases page.
@@ -59,6 +72,7 @@ Settings are in `BepInEx\config\deskrawl.qol.cfg`, which is created after the fi
 - **Pick hotkeys the game doesn't use.** The game ignores Ctrl/Shift/Alt, so `Alt+R` would also trigger its R action (return to town). On startup the mod lists the game's keys in `BepInEx\LogOutput.log` (`Game keys: ...`) and warns about any conflicting hotkey. Keys in use: WASD, arrow keys, C, E, I, J, L, M, R, T, 1, 2, Space, Enter, Shift, Esc, plus your boss key.
 - `[DpsMeter.Overlay]` holds visibility, font size, position and breakdown rows.
 - `[AutoNextStage]` holds the toggle state and its label text.
+- `[GoldXp]` holds the gold/XP panel's hotkeys, visibility, font size and position.
 
 ## Troubleshooting
 
