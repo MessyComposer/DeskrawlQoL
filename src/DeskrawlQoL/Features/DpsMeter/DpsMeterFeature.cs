@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using BepInEx.Configuration;
 using DeskrawlQoL.Core;
@@ -20,7 +22,7 @@ internal sealed class DpsMeterFeature : IFeature
     internal static ConfigEntry<string> ToggleKey, ResetKey, BreakdownKey, HealthField;
     internal static ConfigEntry<float> CombatTimeout, RollingWindow, PosX, PosY;
     internal static ConfigEntry<int> FontSize, MaxRows;
-    internal static ConfigEntry<bool> Visible, ShowBreakdown, DebugLog;
+    internal static ConfigEntry<bool> Visible, ShowBreakdown, DebugLog, DisplayNames;
 
     public void Bind(ConfigFile c)
     {
@@ -38,6 +40,9 @@ internal sealed class DpsMeterFeature : IFeature
 
         Visible = c.Bind(o, "Visible", true, "Overlay visible.");
         ShowBreakdown = c.Bind(o, "ShowBreakdown", true, "Show the per-source breakdown.");
+        DisplayNames = c.Bind(o, "UseDisplayNames", true,
+            "Show sources by their in-game name (e.g. 'Heavy Attack'). false = internal asset names (e.g. 'WarriorHeavyAttack2'), " +
+            "which tell apart variants that share a display name. Sources without a translation always use the internal name.");
         MaxRows = c.Bind(o, "BreakdownRows", 10, "Max number of sources listed in the breakdown.");
         FontSize = c.Bind(o, "FontSize", 14, "Overlay font size.");
         PosX = c.Bind(o, "PosX", 20f, "Overlay X position (drag the title bar to move).");
@@ -66,8 +71,57 @@ internal sealed class DpsMeterFeature : IFeature
             typeof(long), typeof(bool), typeof(DamageType), typeof(int), typeof(bool), typeof(Character), typeof(ScriptableObject));
         if (takeDamage == null) return false;
         _origTakeDamage = Il2CppHooks.HookVirtual<TakeDamageFn>(takeDamage, TakeDamageHook);
+
+        InstallThornsDetection();
         return true;
     }
+
+    // ---------- thorns ----------
+    //
+    // Thorns is dealt from DamageEffect.ApplyTo(context) (obfuscated tb): when an enemy's direct hit lands
+    // on the player, the game calls TakeDamage on that enemy with (Physical, canDodge: false, attacker: null,
+    // source: null). We track which enemy's effect is being applied, and only a hit on *that* enemy with
+    // exactly those arguments is labelled Thorns; other unsourced damage stays "Other (no source)".
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    private delegate void ApplyEffectFn(IntPtr self, IntPtr context, IntPtr mi);
+
+    private static ApplyEffectFn _origApplyEffect;
+    private static int _contextCasterOffset;
+    private static readonly Stack<IntPtr> EffectCasters = new();
+
+    private static void InstallThornsDetection()
+    {
+        // void tb(c context): the DamageEffect method whose context type has a parameterless method returning Enemy (c.sf()).
+        var apply = typeof(DamageEffect)
+            .GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly)
+            .FirstOrDefault(m => m.ReturnType == typeof(void) && m.GetParameters().Length == 1
+                && m.GetParameters()[0].ParameterType.GetMethods().Any(x => x.ReturnType == typeof(Enemy) && x.GetParameters().Length == 0));
+        if (apply == null) { Plugin.L.LogWarning("DpsMeter: DamageEffect apply method not found; thorns will show as 'Other (no source)'."); return; }
+
+        // The context's caster field (read by c.sf()).
+        _contextCasterOffset = Il2CppHooks.FieldOffset(apply.GetParameters()[0].ParameterType, "lhb", 0x50);
+        _origApplyEffect = Il2CppHooks.HookVirtual<ApplyEffectFn>(apply, ApplyEffectHook);
+    }
+
+    private static void ApplyEffectHook(IntPtr self, IntPtr context, IntPtr mi)
+    {
+        IntPtr caster = IntPtr.Zero;
+        try
+        {
+            if (context != IntPtr.Zero) caster = Marshal.ReadIntPtr(context, _contextCasterOffset);
+            if (EffectCasters.Count > 64) EffectCasters.Clear();
+        }
+        catch (Exception e) { Plugin.L.LogError(e); }
+
+        EffectCasters.Push(caster);
+        try { _origApplyEffect(self, context, mi); }
+        finally { if (EffectCasters.Count > 0) EffectCasters.Pop(); }
+    }
+
+    private static bool IsThorns(IntPtr target, int type, byte canDodge, IntPtr attacker, IntPtr source) =>
+        attacker == IntPtr.Zero && source == IntPtr.Zero && canDodge == 0 && type == (int)DamageType.Physical
+        && EffectCasters.Count > 0 && EffectCasters.Peek() == target;
 
     private static long Hp(IntPtr character) => Marshal.ReadInt64(character, _hpOffset);
 
@@ -85,12 +139,14 @@ internal sealed class DpsMeterFeature : IFeature
     private static byte TakeDamageHook(IntPtr self, long amount, byte crit, int type, int d, byte canDodge, IntPtr attacker, IntPtr source, IntPtr mi)
     {
         Frame f = null;
+        bool thorns = false;
         try
         {
             if (Frames.Count > 64) Frames.Clear(); // never let a desync grow unbounded
             f = new Frame { Target = Il2CppHooks.IsA(self, _enemyClass) ? self : IntPtr.Zero };
             if (f.Target != IntPtr.Zero) f.HpBefore = Hp(self);
             Frames.Push(f);
+            thorns = IsThorns(self, type, canDodge, attacker, source);
         }
         catch (Exception e) { Plugin.L.LogError(e); }
 
@@ -108,7 +164,7 @@ internal sealed class DpsMeterFeature : IFeature
                     {
                         if (Frames.Count > 0 && Frames.Peek().Target == f.Target) Frames.Peek().Nested += delta;
                         long own = delta - f.Nested;
-                        if (own > 0) Meter.Current.Add(own, DescribeSource(attacker, source), crit != 0);
+                        if (own > 0) Meter.Current.Add(own, thorns ? "Thorns" : DescribeSource(attacker, source), crit != 0);
                     }
                 }
             }
@@ -131,10 +187,17 @@ internal sealed class DpsMeterFeature : IFeature
                 _ when typeName.StartsWith("EquipmentEffect") => " [item]",
                 _ => $" [{typeName}]",
             };
-            return SourceNames[src] = Il2CppHooks.ObjName(src) + tag;
+            return SourceNames[src] = Name(src) + tag;
         }
         if (attacker == IntPtr.Zero) return "Other (no source)";
         if (Il2CppHooks.IsA(attacker, _playerClass)) return "Basic attack / direct";
-        return Il2CppHooks.ObjName(attacker) + " [minion]";
+        return Name(attacker) + " [minion]";
+    }
+
+    /// <summary>In-game display name (localized, keyed by asset name) or the internal asset name.</summary>
+    private static string Name(IntPtr obj)
+    {
+        string raw = Il2CppHooks.ObjName(obj);
+        return DisplayNames.Value ? GameText.Localize(raw) ?? raw : raw;
     }
 }

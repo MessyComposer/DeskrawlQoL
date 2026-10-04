@@ -134,9 +134,18 @@ internal static unsafe class Il2CppHooks
         obj == IntPtr.Zero ? "" : Marshal.PtrToStringAnsi(IL2CPP.il2cpp_class_get_name(IL2CPP.il2cpp_object_get_class(obj))) ?? "";
 
     /// <summary>Byte offset of an instance field, or <paramref name="fallback"/> if not found.</summary>
-    public static int FieldOffset<T>(string fieldName, int fallback)
+    public static int FieldOffset<T>(string fieldName, int fallback) => FieldOffset(ClassOf<T>(), fieldName, fallback);
+
+    /// <summary>As <see cref="FieldOffset{T}"/>, for an interop type only known at runtime.</summary>
+    public static int FieldOffset(Type type, string fieldName, int fallback)
     {
-        var field = IL2CPP.il2cpp_class_get_field_from_name(ClassOf<T>(), fieldName);
+        var store = typeof(Il2CppClassPointerStore<>).MakeGenericType(type);
+        return FieldOffset((IntPtr)store.GetField("NativeClassPtr").GetValue(null), fieldName, fallback);
+    }
+
+    private static int FieldOffset(IntPtr klass, string fieldName, int fallback)
+    {
+        var field = klass != IntPtr.Zero ? IL2CPP.il2cpp_class_get_field_from_name(klass, fieldName) : IntPtr.Zero;
         return field != IntPtr.Zero ? (int)IL2CPP.il2cpp_field_get_offset(field) : fallback;
     }
 

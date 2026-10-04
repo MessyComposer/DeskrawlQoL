@@ -9,7 +9,8 @@ Quality-of-life mod for [Deskrawl](https://store.steampowered.com/app/4623570/).
 A live, draggable overlay that shows your real damage output, including the indirect damage the training dummy misses: DoTs, procs, minions and on-hit effects.
 
 - **Encounter DPS**, **last 5 s DPS** (with peak), **total damage**, **duration** and **hit count**.
-- **Per-source breakdown**: DPS, share of total and crit rate for each ability, tagged `[status]` (DoTs and debuffs), `[talent]`, `[item]` or `[minion]`.
+- **Per-source breakdown**: DPS, share of total and crit rate for each ability, tagged `[status]` (DoTs and debuffs), `[talent]`, `[item]` or `[minion]`. Thorns damage gets its own **Thorns** row. It only appears in real fights, since the training dummy never hits you.
+- Sources use their in-game names (e.g. "Heavy Attack"), in the game's current language. Variants that share a name (like a combo's hits) are combined into one row. Set `UseDisplayNames = false` to see internal names instead (e.g. `WarriorHeavyAttack2`), one row per variant.
 - Counts the HP actually removed from enemies, after mitigation and shields, without overkill.
 - An encounter ends after 8 s without damage, and the next hit starts a new one. Set `CombatTimeoutSeconds = 0` for long training-dummy sessions and reset manually.
 
@@ -57,7 +58,7 @@ Settings are in `BepInEx\config\deskrawl.qol.cfg`, which is created after the fi
 - `[Features]` turns each feature on or off.
 - `[DpsMeter]` holds hotkeys, combat timeout and rolling window. Hotkeys use the format `Alt+O`, `Ctrl+Shift+M` or `Alt+1`.
 - **Pick hotkeys the game doesn't use.** The game ignores Ctrl/Shift/Alt, so `Alt+R` would also trigger its R action (return to town). On startup the mod lists the game's keys in `BepInEx\LogOutput.log` (`Game keys: ...`) and warns about any conflicting hotkey. Keys in use: WASD, arrow keys, C, E, I, J, L, M, R, T, 1, 2, Space, Enter, Shift, Esc, plus your boss key.
-- `[DpsMeter.Overlay]` holds visibility, font size, position and breakdown rows.
+- `[DpsMeter.Overlay]` holds visibility, font size, position, breakdown rows and in-game vs. internal source names.
 - `[AutoNextStage]` holds the toggle state and its label text.
 
 ## Troubleshooting

@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.1
+
+- DPS meter: thorns damage now shows as its own **Thorns** row in the breakdown instead of "Other (no source)". Other damage without a source still shows as "Other (no source)".
+- DPS meter: sources now use their in-game names (e.g. "Heavy Attack" instead of "WarriorHeavyAttack2"), and variants with the same name share one row. Set `[DpsMeter.Overlay] UseDisplayNames = false` to keep the internal names.
+
 ## 1.1.0
 
 - New: **Auto next stage**. A toggle next to the game's auto-replay (on the stage-complete screen and in combat settings) that moves on to the next stage automatically after the auto-replay countdown. On your furthest stage, auto-replay takes over as usual.
