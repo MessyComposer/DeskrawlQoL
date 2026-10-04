@@ -8,6 +8,7 @@ using DeskrawlQoL.Core;
 using DeskrawlQoL.Features.AutoNextStage;
 using DeskrawlQoL.Features.BossHp;
 using DeskrawlQoL.Features.DpsMeter;
+using DeskrawlQoL.Features.GoldXp;
 
 namespace DeskrawlQoL;
 
@@ -26,7 +27,7 @@ public class Plugin : BasePlugin
         L = Log;
 
         // Register new features here.
-        var all = new IFeature[] { new DpsMeterFeature(), new AutoNextStageFeature(), new BossHpFeature() };
+        var all = new IFeature[] { new DpsMeterFeature(), new AutoNextStageFeature(), new BossHpFeature(), new GoldXpFeature() };
 
         foreach (var f in all)
         {

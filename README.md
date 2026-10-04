@@ -36,6 +36,19 @@ Adds an **Auto next stage** toggle next to the game's auto-replay toggles: on th
 
 Shows the boss's HP as numbers on the boss health bar, e.g. `12.3M / 45.6M (27%)`. The game's bar otherwise only has a fill. The format is configurable (`[BossHp] Format`, placeholders `{current}`, `{max}`, `{percent}`), and `AbbreviateNumbers = false` shows full numbers.
 
+### Gold / XP per hour
+
+A small draggable panel with **gold/hour**, **XP/hour**, gold and XP gained this session, and an estimate of the **time to your next level** at the current rate.
+
+- Gold counts income only. Spending doesn't lower it. Selling items and offline rewards count as income, so press reset after collecting offline rewards for a clean rate.
+- XP is counted correctly across level-ups.
+- Rates use real time since the session started, so time spent in menus or paused counts too.
+
+| Hotkey | Action |
+|---|---|
+| `Alt+G` | Show/hide the panel |
+| `Alt+N` | Start a new session (reset) |
+
 ## Install
 
 1. Download `DeskrawlQoL-vX.Y.Z.zip` from the releases page.
@@ -65,6 +78,7 @@ Settings are in `BepInEx\config\deskrawl.qol.cfg`, which is created after the fi
 - `[DpsMeter.Overlay]` holds visibility, font size, position, breakdown rows and in-game vs. internal source names.
 - `[AutoNextStage]` holds the toggle state and its label text.
 - `[BossHp]` holds the boss HP text format and number style.
+- `[GoldXp]` holds the gold/XP panel's hotkeys, visibility, font size and position.
 
 ## Troubleshooting
 
