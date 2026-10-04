@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.0
+
+- New: **Auto next stage**. A toggle next to the game's auto-replay (on the stage-complete screen and in combat settings) that moves on to the next stage automatically after the auto-replay countdown. On your furthest stage, auto-replay takes over as usual.
+
 ## 1.0.0
 
 - First release.

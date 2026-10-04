@@ -5,6 +5,7 @@ using BepInEx.Configuration;
 using BepInEx.Logging;
 using BepInEx.Unity.IL2CPP;
 using DeskrawlQoL.Core;
+using DeskrawlQoL.Features.AutoNextStage;
 using DeskrawlQoL.Features.DpsMeter;
 
 namespace DeskrawlQoL;
@@ -14,7 +15,7 @@ public class Plugin : BasePlugin
 {
     public const string Guid = "deskrawl.qol";
     public const string Name = "Deskrawl QoL";
-    public const string Version = "1.0.0";
+    public const string Version = "1.1.0";
 
     internal static ManualLogSource L;
     internal static readonly List<IFeature> Features = new();
@@ -24,7 +25,7 @@ public class Plugin : BasePlugin
         L = Log;
 
         // Register new features here.
-        var all = new IFeature[] { new DpsMeterFeature() };
+        var all = new IFeature[] { new DpsMeterFeature(), new AutoNextStageFeature() };
 
         foreach (var f in all)
         {
