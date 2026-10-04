@@ -6,6 +6,7 @@ using BepInEx.Logging;
 using BepInEx.Unity.IL2CPP;
 using DeskrawlQoL.Core;
 using DeskrawlQoL.Features.AutoNextStage;
+using DeskrawlQoL.Features.BossHp;
 using DeskrawlQoL.Features.DpsMeter;
 
 namespace DeskrawlQoL;
@@ -25,7 +26,7 @@ public class Plugin : BasePlugin
         L = Log;
 
         // Register new features here.
-        var all = new IFeature[] { new DpsMeterFeature(), new AutoNextStageFeature() };
+        var all = new IFeature[] { new DpsMeterFeature(), new AutoNextStageFeature(), new BossHpFeature() };
 
         foreach (var f in all)
         {
