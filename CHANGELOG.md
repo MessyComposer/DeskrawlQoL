@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.2.0
 
 - New: **Boss HP numbers**. The boss health bar shows current / max HP and percent, e.g. `12.3M / 45.6M (27%)`. The format is configurable.
 - New: **Gold / XP per hour** panel with session totals and time to next level (`Alt+G` to show/hide, `Alt+N` to reset).

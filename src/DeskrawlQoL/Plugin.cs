@@ -17,7 +17,7 @@ public class Plugin : BasePlugin
 {
     public const string Guid = "deskrawl.qol";
     public const string Name = "Deskrawl QoL";
-    public const string Version = "1.1.1";
+    public const string Version = "1.2.0";
 
     internal static ManualLogSource L;
     internal static readonly List<IFeature> Features = new();
