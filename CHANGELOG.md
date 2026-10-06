@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.2.1
+
+- Fixed for game version 1.0.1: the DPS meter only showed Thorns.
+- Removed: **Auto next stage**. Game 1.0.1 has its own auto-run mode with a Next Stage option.
+
 ## 1.2.0
 
 - New: **Boss HP numbers**. The boss health bar shows current / max HP and percent, e.g. `12.3M / 45.6M (27%)`. The format is configurable.

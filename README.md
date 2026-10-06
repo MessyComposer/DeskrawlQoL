@@ -24,14 +24,6 @@ Drag the panel by its title row to move it.
 
 **Known limitation:** kills from the *Execute* talent remove HP without going through the game's normal damage path, so the meter doesn't count them.
 
-### Auto next stage
-
-Adds an **Auto next stage** toggle next to the game's auto-replay toggles: on the stage-complete screen (above auto-replay) and in the combat settings (below auto-rerun). Both control the same setting. When it's on and there is a next stage, the screen counts down (same delay as auto-replay) and moves on to the next stage, just like clicking **Next Stage**.
-
-- Takes priority over auto-replay while a next stage exists. On the last unlocked stage, auto-replay works as usual, so turning on both means "push forward, then farm the furthest stage".
-- Turning it off during the countdown hands the screen back to auto-replay.
-- The toggle state is remembered (`[AutoNextStage] Enabled`).
-
 ### Boss HP numbers
 
 Shows the boss's HP as numbers on the boss health bar, e.g. `12.3M / 45.6M (27%)`. The game's bar otherwise only has a fill. The format is configurable (`[BossHp] Format`, placeholders `{current}`, `{max}`, `{percent}`), and `AbbreviateNumbers = false` shows full numbers.
@@ -76,7 +68,6 @@ Settings are in `BepInEx\config\deskrawl.qol.cfg`, which is created after the fi
 - `[DpsMeter]` holds hotkeys, combat timeout and rolling window. Hotkeys use the format `Alt+O`, `Ctrl+Shift+M` or `Alt+1`.
 - **Pick hotkeys the game doesn't use.** The game ignores Ctrl/Shift/Alt, so `Alt+R` would also trigger its R action (return to town). On startup the mod lists the game's keys in `BepInEx\LogOutput.log` (`Game keys: ...`) and warns about any conflicting hotkey. Keys in use: WASD, arrow keys, C, E, I, J, L, M, R, T, 1, 2, Space, Enter, Shift, Esc, plus your boss key.
 - `[DpsMeter.Overlay]` holds visibility, font size, position, breakdown rows and in-game vs. internal source names.
-- `[AutoNextStage]` holds the toggle state and its label text.
 - `[BossHp]` holds the boss HP text format and number style.
 - `[GoldXp]` holds the gold/XP panel's hotkeys, visibility, font size and position.
 
@@ -88,7 +79,7 @@ Settings are in `BepInEx\config\deskrawl.qol.cfg`, which is created after the fi
 
 ## Compatibility and disclaimer
 
-Tested with the Deskrawl build of 2026-10-03 (Unity 6000.3.6f1). This is an unofficial fan mod, not affiliated with or endorsed by First Day Games. It doesn't edit game values or saves, but use it at your own risk.
+Tested with Deskrawl 1.0.1 (Unity 6000.3.6f1). This is an unofficial fan mod, not affiliated with or endorsed by First Day Games. It doesn't edit game values or saves, but use it at your own risk.
 
 ---
 

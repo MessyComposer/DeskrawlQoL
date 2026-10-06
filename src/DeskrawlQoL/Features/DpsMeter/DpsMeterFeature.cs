@@ -198,6 +198,9 @@ internal sealed class DpsMeterFeature : IFeature
     private static string Name(IntPtr obj)
     {
         string raw = Il2CppHooks.ObjName(obj);
-        return DisplayNames.Value ? GameText.Localize(raw) ?? raw : raw;
+        if (!DisplayNames.Value) return raw;
+        // A failed lookup (e.g. after a game update) must never cost the hit; fall back to the internal name.
+        try { return GameText.Localize(raw) ?? raw; }
+        catch { return raw; }
     }
 }
