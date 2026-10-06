@@ -13,8 +13,8 @@ internal static class GoldXpOverlay
 
     private static void EnsureStyles()
     {
-        if (_label != null && _styleFont == S.FontSize.Value) return;
-        _styleFont = S.FontSize.Value;
+        if (_label != null && _styleFont == Settings.FontSize.Value) return;
+        _styleFont = Settings.FontSize.Value;
         _label = Ui.Text(_styleFont, Color.white);
         _right = Ui.Text(_styleFont, Color.white, TextAnchor.MiddleRight);
         _title = Ui.Text(_styleFont, new Color(1f, 0.85f, 0.35f), bold: true);
@@ -25,12 +25,12 @@ internal static class GoldXpOverlay
     {
         var e = Event.current;
         if (Hotkey.Pressed(e, S.ToggleKey.Value)) { S.Visible.Value = !S.Visible.Value; e.Use(); }
-        else if (Hotkey.Pressed(e, S.ResetKey.Value)) { S.Reset(); e.Use(); }
+        else if (Hotkey.Pressed(e, S.ResetKey.Value)) { S.ResetSession(); e.Use(); }
         if (!S.Visible.Value) return;
 
         EnsureStyles();
-        float line = S.FontSize.Value + 6f;
-        float width = S.FontSize.Value * 20f;
+        float line = Settings.FontSize.Value + 6f;
+        float width = Settings.FontSize.Value * 20f;
         float x = S.PosX.Value, y = S.PosY.Value;
 
         Drag.Handle(e, new Rect(x, y, width, line), S.PosX, S.PosY);
@@ -46,7 +46,7 @@ internal static class GoldXpOverlay
 
         float pad = 6f, cx = x + pad, cw = width - 2 * pad, cy = y + 4;
         GUI.Label(new Rect(cx, cy, cw, line), "Gold / XP", _title);
-        GUI.Label(new Rect(cx, cy, cw, line), $"[{S.ResetKey.Value}] reset", _right);
+        GUI.Label(new Rect(cx, cy, cw, line), string.IsNullOrEmpty(S.ResetKey.Value) ? "" : $"[{S.ResetKey.Value}] reset", _right);
         cy += line;
 
         Row(ref cy, cx, cw, line, "Gold / hour", Ui.Num(S.GoldGained / hours));

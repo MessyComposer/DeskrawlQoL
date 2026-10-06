@@ -22,7 +22,8 @@ internal static class Hotkey
     /// <summary>Binds a hotkey config entry and registers it for conflict checks.</summary>
     public static ConfigEntry<string> Bind(ConfigFile config, string section, string key, string defaultValue, string action)
     {
-        var entry = config.Bind(section, key, defaultValue, $"{action}. {FormatHelp}");
+        string optional = string.IsNullOrEmpty(defaultValue) ? " Optional: unbound by default, everything is also in the settings panel." : "";
+        var entry = config.Bind(section, key, defaultValue, $"{action}.{optional} {FormatHelp}");
         Registered.Add((action, entry));
         return entry;
     }
@@ -36,6 +37,7 @@ internal static class Hotkey
 
     private static (KeyCode key, bool ctrl, bool shift, bool alt) Parse(string spec)
     {
+        if (string.IsNullOrWhiteSpace(spec)) return (KeyCode.None, false, false, false); // unbound
         if (Cache.TryGetValue(spec, out var c)) return c;
         var r = (key: KeyCode.None, ctrl: false, shift: false, alt: false);
         foreach (var raw in spec.Split('+'))

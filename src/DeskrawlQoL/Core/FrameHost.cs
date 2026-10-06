@@ -88,12 +88,26 @@ internal static class FrameHost
     private static void HostOnGUI(IntPtr self, IntPtr mi)
     {
         if (self != _host) { _origHostOnGUI(self, mi); return; }
+
+        // The settings panel sits on top: it handles input first and paints last.
+        bool repaint = Event.current.type == EventType.Repaint;
+        if (!repaint) DrawSettingsPanel();
         foreach (var f in Plugin.Features)
         {
             if (Failed.Contains(f)) continue;
             try { f.OnGUI(); }
             catch (Exception e) { Failed.Add(f); Plugin.L.LogError($"{f.Id}.OnGUI failed, feature stopped: {e}"); }
         }
-        if (Event.current.type == EventType.Repaint) ClickThrough.EndRepaint();
+        if (repaint)
+        {
+            DrawSettingsPanel();
+            ClickThrough.EndRepaint();
+        }
+    }
+
+    private static void DrawSettingsPanel()
+    {
+        try { SettingsPanel.OnGUI(); }
+        catch (Exception e) { Plugin.L.LogError($"Settings panel: {e}"); }
     }
 }

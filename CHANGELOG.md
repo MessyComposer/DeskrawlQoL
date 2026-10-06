@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.3.0
+
+- New: **Settings panel** (`Alt+Q`). Show or hide each view, switch their options, change the font size and reset metrics, all in one place.
+- New: **Incoming damage** panel: damage taken per second, smallest and biggest hit, avoided hits, how much your defences prevented, crit vs normal hits, and a breakdown by damage type.
+- The DPS meter and gold/XP hotkeys are now unbound by default; the settings panel replaces them. If you'd set them in your config, they keep working.
+- One font size for all panels, set in the settings panel. The old per-panel `FontSize` settings are no longer used.
+
 ## 1.2.1
 
 - Fixed for game version 1.0.1: the DPS meter only showed Thorns.

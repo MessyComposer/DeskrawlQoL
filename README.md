@@ -4,42 +4,41 @@ Quality-of-life mod for [Deskrawl](https://store.steampowered.com/app/4623570/).
 
 ## Features
 
+Press **`Alt+Q`** in game to open the **settings panel**. There you can show or hide each view, switch their options, change the font size and reset the metrics. Drag any panel by its title row to move it.
+
 ### DPS meter
 
-A live, draggable overlay that shows your real damage output, including the indirect damage the training dummy misses: DoTs, procs, minions and on-hit effects.
+A live overlay that shows your real damage output, including the indirect damage the training dummy misses: DoTs, procs, minions and on-hit effects.
 
 - **Encounter DPS**, **last 5 s DPS** (with peak), **total damage**, **duration** and **hit count**.
 - **Per-source breakdown**: DPS, share of total and crit rate for each ability, tagged `[status]` (DoTs and debuffs), `[talent]`, `[item]` or `[minion]`. Thorns damage gets its own **Thorns** row. It only appears in real fights, since the training dummy never hits you.
-- Sources use their in-game names (e.g. "Heavy Attack"), in the game's current language. Variants that share a name (like a combo's hits) are combined into one row. Set `UseDisplayNames = false` to see internal names instead (e.g. `WarriorHeavyAttack2`), one row per variant.
+- Sources use their in-game names (e.g. "Heavy Attack"), in the game's current language. Variants that share a name (like a combo's hits) are combined into one row. Turn off "In-game source names" to see internal names instead (e.g. `WarriorHeavyAttack2`), one row per variant.
 - Counts the HP actually removed from enemies, after mitigation and shields, without overkill.
 - An encounter ends after 8 s without damage, and the next hit starts a new one. Set `CombatTimeoutSeconds = 0` for long training-dummy sessions and reset manually.
 
-| Hotkey | Action |
-|---|---|
-| `Alt+O` | Show/hide the overlay |
-| `Alt+X` | Reset the encounter |
-| `Alt+F` | Show/hide the breakdown |
-
-Drag the panel by its title row to move it.
-
 **Known limitation:** kills from the *Execute* talent remove HP without going through the game's normal damage path, so the meter doesn't count them.
 
-### Boss HP numbers
+### Incoming damage
 
-Shows the boss's HP as numbers on the boss health bar, e.g. `12.3M / 45.6M (27%)`. The game's bar otherwise only has a fill. The format is configurable (`[BossHp] Format`, placeholders `{current}`, `{max}`, `{percent}`), and `AbbreviateNumbers = false` shows full numbers.
+What's hurting you, to help decide which defences to invest in.
+
+- **Damage taken per second** (encounter and last 5 s, with peak), total taken, hits and **avoided** hits (dodged, or while invulnerable).
+- **Smallest and biggest hit.**
+- **Prevented by defences**: how much of the raw incoming damage your armor, resistances and shields stopped.
+- **Crit vs normal hits**: share of damage, hit count, biggest hit and prevented %. A large crit share points at crit-damage reduction.
+- **By damage type** (Physical, Fire, Cold, Lightning, Poison, Arcane): damage per second, share and prevented %. A large share with a low prevented % points at that resistance.
 
 ### Gold / XP per hour
 
-A small draggable panel with **gold/hour**, **XP/hour**, gold and XP gained this session, and an estimate of the **time to your next level** at the current rate.
+A small panel with **gold/hour**, **XP/hour**, gold and XP gained this session, and an estimate of the **time to your next level** at the current rate.
 
-- Gold counts income only. Spending doesn't lower it. Selling items and offline rewards count as income, so press reset after collecting offline rewards for a clean rate.
+- Gold counts income only. Spending doesn't lower it. Selling items and offline rewards count as income, so start a new session after collecting offline rewards for a clean rate.
 - XP is counted correctly across level-ups.
 - Rates use real time since the session started, so time spent in menus or paused counts too.
 
-| Hotkey | Action |
-|---|---|
-| `Alt+G` | Show/hide the panel |
-| `Alt+N` | Start a new session (reset) |
+### Boss HP numbers
+
+Shows the boss's HP as numbers on the boss health bar, e.g. `12.3M / 45.6M (27%)`. The game's bar otherwise only has a fill. The format is configurable (`[BossHp] Format`, placeholders `{current}`, `{max}`, `{percent}`).
 
 ## Install
 
@@ -62,19 +61,18 @@ Delete `winhttp.dll` from the game folder. That alone disables all mods. To remo
 
 ## Configuration
 
-Settings are in `BepInEx\config\deskrawl.qol.cfg`, which is created after the first launch. Edit it while the game is closed.
+Most settings are in the in-game settings panel (`Alt+Q`). Everything is also in `BepInEx\config\deskrawl.qol.cfg`, which is created after the first launch. Edit the file while the game is closed.
 
-- `[Features]` turns each feature on or off.
-- `[DpsMeter]` holds hotkeys, combat timeout and rolling window. Hotkeys use the format `Alt+O`, `Ctrl+Shift+M` or `Alt+1`.
+- `[General]` holds the settings panel hotkey, the font size and the settings panel position.
+- `[Features]` turns each feature on or off completely (takes effect on the next launch).
+- `[DpsMeter]`, `[DpsMeter.Overlay]`, `[IncomingDamage]`, `[GoldXp]` and `[BossHp]` hold each view's options and panel positions, plus extras not in the panel, like combat timeouts and the boss HP text format.
+- **Optional direct hotkeys:** `[DpsMeter]` and `[GoldXp]` have unbound hotkeys for showing or resetting their views without opening the settings panel. They use the format `Alt+P`, `Ctrl+Shift+M` or `Alt+1`.
 - **Pick hotkeys the game doesn't use.** The game ignores Ctrl/Shift/Alt, so `Alt+R` would also trigger its R action (return to town). On startup the mod lists the game's keys in `BepInEx\LogOutput.log` (`Game keys: ...`) and warns about any conflicting hotkey. Keys in use: WASD, arrow keys, C, E, I, J, L, M, R, T, 1, 2, Space, Enter, Shift, Esc, plus your boss key.
-- `[DpsMeter.Overlay]` holds visibility, font size, position, breakdown rows and in-game vs. internal source names.
-- `[BossHp]` holds the boss HP text format and number style.
-- `[GoldXp]` holds the gold/XP panel's hotkeys, visibility, font size and position.
 
 ## Troubleshooting
 
 - **The game closes right after start (brief white window):** BepInEx is crashing. Check that `UnityLogListening = false` is set in `BepInEx\config\BepInEx.cfg`.
-- **No overlay:** press `Alt+O`. Then check `BepInEx\LogOutput.log` for lines starting with `Deskrawl QoL`.
+- **No overlay:** open the settings panel with `Alt+Q` and check the view is turned on. Then check `BepInEx\LogOutput.log` for lines starting with `Deskrawl QoL`.
 - **After a game update:** if the meter stops working or the game crashes, set the feature to `false` under `[Features]` (or delete `winhttp.dll`) until a mod update is out. Please include `BepInEx\LogOutput.log` in bug reports. Setting `LogDamageSummary = true` adds damage totals to the log.
 
 ## Compatibility and disclaimer
@@ -128,7 +126,9 @@ src/DeskrawlQoL/
   Core/FrameHost.cs      per-frame Update/OnGUI for features
   Core/ClickThrough.cs   keeps the window solid under our panels
   Core/Hotkey.cs, Ui.cs  hotkey parsing, IMGUI helpers
-  Core/GameKeys.cs      logs the game's key bindings, warns on hotkey conflicts
+  Core/GameKeys.cs       logs the game's key bindings, warns on hotkey conflicts
+  Core/Settings*.cs      settings panel (Alt+Q), its controls, and shared settings like font size
+  Core/GameText.cs       the game's localized texts (in-game names)
   Features/<Name>/       one folder per feature
 packaging/               BepInEx.cfg shipped in releases, third-party licenses
 scripts/                 dev.ps1, package.ps1
@@ -136,7 +136,7 @@ scripts/                 dev.ps1, package.ps1
 
 ### Adding a feature
 
-1. Create `Features/<Name>/<Name>Feature.cs` implementing `IFeature`: `Bind` (config), `Install` (hooks; return `false` if it can't work on this build), and optionally `Update`/`OnGUI`. Bind hotkeys with `Hotkey.Bind`.
+1. Create `Features/<Name>/<Name>Feature.cs` implementing `IFeature`: `Bind` (config), `Install` (hooks; return `false` if it can't work on this build), and optionally `Update`/`OnGUI`. Give it a `Title`, a `DrawSettings` section for the settings panel (its show/hide toggle, options and a reset button) and `Reset` for "Reset all metrics". Use `Settings.FontSize` for panel text. Prefer settings-panel controls over hotkeys; if you add a hotkey, bind it with `Hotkey.Bind` and leave it unbound by default.
 2. Add it to the array in `Plugin.Load`. It automatically gets an on/off switch under `[Features]`.
 
 ### Hooking on this game: read before changing anything

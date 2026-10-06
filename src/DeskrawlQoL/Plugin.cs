@@ -8,6 +8,7 @@ using DeskrawlQoL.Core;
 using DeskrawlQoL.Features.BossHp;
 using DeskrawlQoL.Features.DpsMeter;
 using DeskrawlQoL.Features.GoldXp;
+using DeskrawlQoL.Features.IncomingDamage;
 
 namespace DeskrawlQoL;
 
@@ -16,7 +17,7 @@ public class Plugin : BasePlugin
 {
     public const string Guid = "deskrawl.qol";
     public const string Name = "Deskrawl QoL";
-    public const string Version = "1.2.1";
+    public const string Version = "1.3.0";
 
     internal static ManualLogSource L;
     internal static readonly List<IFeature> Features = new();
@@ -24,9 +25,10 @@ public class Plugin : BasePlugin
     public override void Load()
     {
         L = Log;
+        Settings.Bind(Config);
 
-        // Register new features here.
-        var all = new IFeature[] { new DpsMeterFeature(), new BossHpFeature(), new GoldXpFeature() };
+        // Register new features here. Their order is the order of their sections in the settings panel.
+        var all = new IFeature[] { new DpsMeterFeature(), new IncomingDamageFeature(), new GoldXpFeature(), new BossHpFeature() };
 
         foreach (var f in all)
         {
@@ -51,10 +53,16 @@ internal interface IFeature
 {
     /// <summary>Config key under [Features] and log prefix.</summary>
     string Id { get; }
+    /// <summary>Section title in the settings panel.</summary>
+    string Title => Id;
     string Description { get; }
     void Bind(ConfigFile config);
     /// <summary>Install hooks. Return false if the feature can't work on this game build.</summary>
     bool Install();
     void Update() { }
     void OnGUI() { }
+    /// <summary>The feature's controls in the settings panel (under its title).</summary>
+    void DrawSettings(SettingsGui g) { }
+    /// <summary>Clear the feature's metrics (settings panel "Reset all").</summary>
+    void Reset() { }
 }

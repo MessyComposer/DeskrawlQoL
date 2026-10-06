@@ -19,20 +19,19 @@ namespace DeskrawlQoL.Features.GoldXp;
 internal sealed class GoldXpFeature : IFeature
 {
     public string Id => "GoldXp";
+    public string Title => "Gold / XP per hour";
     public string Description => "Gold/hour and XP/hour tracker overlay.";
 
     internal static ConfigEntry<string> ToggleKey, ResetKey;
     internal static ConfigEntry<bool> Visible;
     internal static ConfigEntry<float> PosX, PosY;
-    internal static ConfigEntry<int> FontSize;
 
     public void Bind(ConfigFile c)
     {
         const string s = "GoldXp";
-        ToggleKey = Hotkey.Bind(c, s, "ToggleOverlayKey", "Alt+G", "Gold/XP tracker: show/hide the panel");
-        ResetKey = Hotkey.Bind(c, s, "ResetKey", "Alt+N", "Gold/XP tracker: start a new session");
+        ToggleKey = Hotkey.Bind(c, s, "ToggleOverlayKey", "", "Gold/XP tracker: show/hide the panel");
+        ResetKey = Hotkey.Bind(c, s, "ResetKey", "", "Gold/XP tracker: start a new session");
         Visible = c.Bind(s, "Visible", true, "Panel visible.");
-        FontSize = c.Bind(s, "FontSize", 14, "Panel font size.");
         PosX = c.Bind(s, "PosX", 20f, "Panel X position (drag the title bar to move).");
         PosY = c.Bind(s, "PosY", 80f, "Panel Y position.");
     }
@@ -92,7 +91,15 @@ internal sealed class GoldXpFeature : IFeature
 
     public void OnGUI() => GoldXpOverlay.OnGUI();
 
-    internal static void Reset()
+    public void DrawSettings(SettingsGui g)
+    {
+        g.Toggle("Show panel", Visible);
+        g.Button("New session", ResetSession);
+    }
+
+    void IFeature.Reset() => ResetSession();
+
+    internal static void ResetSession()
     {
         SessionStart = Time.realtimeSinceStartup;
         GoldGained = XpGained = 0;

@@ -21,16 +21,24 @@ namespace DeskrawlQoL.Features.BossHp;
 internal sealed unsafe class BossHpFeature : IFeature
 {
     public string Id => "BossHp";
+    public string Title => "Boss HP";
     public string Description => "Shows the boss's HP as numbers on the boss health bar.";
 
     private static ConfigEntry<string> _format;
-    private static ConfigEntry<bool> _abbreviate;
+    private static ConfigEntry<bool> _abbreviate, _show;
 
     public void Bind(ConfigFile c)
     {
+        _show = c.Bind(Id, "Visible", true, "Show the numbers on the boss health bar.");
         _format = c.Bind(Id, "Format", "{current} / {max} ({percent})",
             "Text on the boss health bar. Placeholders: {current}, {max}, {percent}.");
         _abbreviate = c.Bind(Id, "AbbreviateNumbers", true, "Show 1.23M instead of 1,234,567.");
+    }
+
+    public void DrawSettings(SettingsGui g)
+    {
+        g.Toggle("Show numbers on boss bar", _show);
+        g.Toggle("Abbreviate numbers", _abbreviate);
     }
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -82,7 +90,7 @@ internal sealed unsafe class BossHpFeature : IFeature
         if (_label == null) return;
 
         IntPtr boss = Marshal.ReadIntPtr(self, _bossOffset);
-        if (boss == IntPtr.Zero) { SetText(""); return; }
+        if (boss == IntPtr.Zero || !_show.Value) { SetText(""); return; }
 
         if (_boss == null || _boss.Pointer != boss) _boss = new Character(boss);
         long hp = Math.Max(0L, Marshal.ReadInt64(boss, _hpOffset));

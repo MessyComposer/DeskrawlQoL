@@ -14,8 +14,8 @@ internal static class DpsOverlay
 
     private static void EnsureStyles()
     {
-        if (_label != null && _styleFont == S.FontSize.Value) return;
-        _styleFont = S.FontSize.Value;
+        if (_label != null && _styleFont == Settings.FontSize.Value) return;
+        _styleFont = Settings.FontSize.Value;
         _label = Ui.Text(_styleFont, Color.white);
         _right = Ui.Text(_styleFont, Color.white, TextAnchor.MiddleRight);
         _title = Ui.Text(_styleFont, new Color(1f, 0.8f, 0.4f), bold: true);
@@ -32,8 +32,8 @@ internal static class DpsOverlay
         if (!S.Visible.Value) return;
 
         EnsureStyles();
-        float line = S.FontSize.Value + 6f;
-        float width = S.FontSize.Value * 24f;
+        float line = Settings.FontSize.Value + 6f;
+        float width = Settings.FontSize.Value * 24f;
         float x = S.PosX.Value, y = S.PosY.Value;
 
         Drag.Handle(e, new Rect(x, y, width, line), S.PosX, S.PosY);
@@ -57,7 +57,7 @@ internal static class DpsOverlay
         float cy = y + 4;
         string state = !m.HasData ? "idle" : m.InCombat(now) ? "in combat" : "ended";
         GUI.Label(new Rect(cx, cy, cw, line), "DPS Meter", _title);
-        GUI.Label(new Rect(cx, cy, cw, line), $"{state}  [{S.ResetKey.Value}] reset", _right);
+        GUI.Label(new Rect(cx, cy, cw, line), string.IsNullOrEmpty(S.ResetKey.Value) ? state : $"{state}  [{S.ResetKey.Value}] reset", _right);
         cy += line;
 
         Row(ref cy, cx, cw, line, "Encounter DPS", Ui.Num(m.Dps(now)));

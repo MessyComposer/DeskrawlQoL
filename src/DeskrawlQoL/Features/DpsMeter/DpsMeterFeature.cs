@@ -17,19 +17,20 @@ namespace DeskrawlQoL.Features.DpsMeter;
 internal sealed class DpsMeterFeature : IFeature
 {
     public string Id => "DpsMeter";
+    public string Title => "DPS meter";
     public string Description => "Live DPS meter overlay with per-source breakdown.";
 
     internal static ConfigEntry<string> ToggleKey, ResetKey, BreakdownKey, HealthField;
     internal static ConfigEntry<float> CombatTimeout, RollingWindow, PosX, PosY;
-    internal static ConfigEntry<int> FontSize, MaxRows;
+    internal static ConfigEntry<int> MaxRows;
     internal static ConfigEntry<bool> Visible, ShowBreakdown, DebugLog, DisplayNames;
 
     public void Bind(ConfigFile c)
     {
         const string s = "DpsMeter", o = "DpsMeter.Overlay";
-        ToggleKey = Hotkey.Bind(c, s, "ToggleOverlayKey", "Alt+O", "DPS meter: show/hide the overlay");
-        ResetKey = Hotkey.Bind(c, s, "ResetKey", "Alt+X", "DPS meter: reset the encounter");
-        BreakdownKey = Hotkey.Bind(c, s, "ToggleBreakdownKey", "Alt+F", "DPS meter: show/hide the per-source breakdown");
+        ToggleKey = Hotkey.Bind(c, s, "ToggleOverlayKey", "", "DPS meter: show/hide the overlay");
+        ResetKey = Hotkey.Bind(c, s, "ResetKey", "", "DPS meter: reset the encounter");
+        BreakdownKey = Hotkey.Bind(c, s, "ToggleBreakdownKey", "", "DPS meter: show/hide the per-source breakdown");
         CombatTimeout = c.Bind(s, "CombatTimeoutSeconds", 8f,
             "Seconds without dealing damage before an encounter ends; the next hit starts a new one. 0 = only reset manually.");
         RollingWindow = c.Bind(s, "RollingWindowSeconds", 5f, "Window for the 'last N seconds' DPS number.");
@@ -43,13 +44,25 @@ internal sealed class DpsMeterFeature : IFeature
         DisplayNames = c.Bind(o, "UseDisplayNames", true,
             "Show sources by their in-game name (e.g. 'Heavy Attack'). false = internal asset names (e.g. 'WarriorHeavyAttack2'), " +
             "which tell apart variants that share a display name. Sources without a translation always use the internal name.");
+        DisplayNames.SettingChanged += ClearSourceNames; // re-resolve names with the new setting
         MaxRows = c.Bind(o, "BreakdownRows", 10, "Max number of sources listed in the breakdown.");
-        FontSize = c.Bind(o, "FontSize", 14, "Overlay font size.");
         PosX = c.Bind(o, "PosX", 20f, "Overlay X position (drag the title bar to move).");
         PosY = c.Bind(o, "PosY", 200f, "Overlay Y position.");
     }
 
     public void OnGUI() => DpsOverlay.OnGUI();
+
+    public void DrawSettings(SettingsGui g)
+    {
+        g.Toggle("Show meter", Visible);
+        g.Toggle("Per-source breakdown", ShowBreakdown);
+        g.Toggle("In-game source names", DisplayNames);
+        g.Button("Reset", Meter.Current.Reset);
+    }
+
+    public void Reset() => Meter.Current.Reset();
+
+    private static void ClearSourceNames(object sender, EventArgs e) => SourceNames.Clear();
 
     // ---------- damage hook ----------
 
