@@ -1,6 +1,6 @@
 # Deskrawl QoL
 
-Quality-of-life mod for [Deskrawl](https://store.steampowered.com/app/4623570/). Client-side: it doesn't change game values, saves or online data.
+An unofficial quality-of-life mod for [Deskrawl](https://store.steampowered.com/app/4623570/) featuring a live DPS meter (with per-source breakdown) and an automated gold/XP per hour tracker. Client-side: it doesn't change game values, saves or online data.
 
 ## Features
 
@@ -44,8 +44,8 @@ Shows the boss's HP as numbers on the boss health bar, e.g. `12.3M / 45.6M (27%)
 
 1. Download `DeskrawlQoL-vX.Y.Z.zip` from the releases page.
 2. In Steam, right-click Deskrawl → **Manage → Browse local files**.
-3. Extract the zip into that folder so `winhttp.dll` sits next to `Deskrawl.exe`.
-4. Start the game. **The first launch takes a minute or two** while BepInEx prepares itself. Later launches are normal speed.
+3. Extract the zip directly into the Deskrawl root directory (the folder containing `Deskrawl.exe`) so that `winhttp.dll` sits right next to it.
+5. Start the game. **The first launch takes a minute or two** while BepInEx prepares itself. Later launches are normal speed.
 
 The zip includes [BepInEx](https://github.com/BepInEx/BepInEx) 6.0.0-be.788 (the mod loader), preconfigured for Deskrawl.
 
