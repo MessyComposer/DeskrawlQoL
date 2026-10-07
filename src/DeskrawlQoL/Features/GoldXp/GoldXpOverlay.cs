@@ -52,7 +52,7 @@ internal static class GoldXpOverlay
         Row(ref cy, cx, cw, line, "Gold / hour", Ui.Num(S.GoldGained / hours));
         Row(ref cy, cx, cw, line, "XP / hour", Ui.Num(xpPerHour));
         Row(ref cy, cx, cw, line, $"Gained: {Ui.Num(S.GoldGained)} gold", $"{Ui.Num(S.XpGained)} XP");
-        Row(ref cy, cx, cw, line, $"Level {S.Level} in", TimeToLevel(xpPerHour));
+        Row(ref cy, cx, cw, line, $"Level {S.Level + 1} in", TimeToLevel(xpPerHour));
         Row(ref cy, cx, cw, line, "Session", Ui.Time(elapsed));
     }
 

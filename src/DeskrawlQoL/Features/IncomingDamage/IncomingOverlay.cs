@@ -58,13 +58,15 @@ internal static class IncomingOverlay
         double rolling = m.RollingDtps(now);
         bool showCrit = S.ShowCrit.Value && m.All.Hits > 0;
         bool showTypes = S.ShowByType.Value && m.ByType.Count > 0;
+        const float top = 4f, gap = 4f, bottom = 6f; // gap = space before each optional section
         int lines = 6 + (showCrit ? 3 : 0) + (showTypes ? m.ByType.Count + 1 : 0);
+        float height = top + lines * line + (showCrit ? gap : 0) + (showTypes ? gap : 0) + bottom;
 
-        var panel = new Rect(x, y, width, lines * line + 8);
+        var panel = new Rect(x, y, width, height);
         ClickThrough.Block(Drag.IsDragging ? new Rect(0, 0, Screen.width, Screen.height) : panel);
         GUI.Label(panel, "", _bg);
 
-        float pad = 6f, cx = x + pad, cw = width - 2 * pad, cy = y + 4;
+        float pad = 6f, cx = x + pad, cw = width - 2 * pad, cy = y + top;
         string state = !m.HasData ? "idle" : m.InCombat(now) ? "in combat" : "ended";
         GUI.Label(new Rect(cx, cy, cw, line), "Incoming damage", _title);
         GUI.Label(new Rect(cx, cy, cw, line), state, _right);
@@ -79,7 +81,7 @@ internal static class IncomingOverlay
 
         if (showCrit)
         {
-            cy += 4;
+            cy += gap;
             GUI.Label(new Rect(cx, cy, cw, line), "Hits   (share of damage · hits · biggest · prevented)", _dim);
             cy += line;
             Split(ref cy, cx, cw, line, "Crit", m.Crit, m.All.Taken);
@@ -88,7 +90,7 @@ internal static class IncomingOverlay
 
         if (showTypes)
         {
-            cy += 4;
+            cy += gap;
             GUI.Label(new Rect(cx, cy, cw, line), "By type   (per second · share · prevented)", _dim);
             cy += line;
             float dur = m.Duration(now);

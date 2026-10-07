@@ -136,11 +136,23 @@ internal sealed class GoldXpFeature : IFeature
             if (_player == null) { _havePrev = false; return false; }
         }
 
+        // Switching characters swaps in another character's level and XP (gold is shared between
+        // characters). Re-baseline so the difference isn't counted as a gain; the session continues.
+        string identity = $"{data.Pointer}|{_player.Pointer}|{data.PlayerName}";
+        if (identity != _identity)
+        {
+            if (_identity != null) Plugin.L.LogInfo($"GoldXp: character changed ({data.PlayerName}).");
+            _identity = identity;
+            _havePrev = false;
+        }
+
         gold = data.Gold;          // ObscuredInt -> int (ACTk decrypt)
         xp = _player.CurrentXP;    // ObscuredLong -> long
         level = _player._level;    // ObscuredInt -> int
         return true;
     }
+
+    private static string _identity;
 
     /// <summary>The cached Player is still alive and in the scene (it's replaced when scenes reload).</summary>
     private static bool PlayerUsable()

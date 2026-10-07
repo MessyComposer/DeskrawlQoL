@@ -15,10 +15,14 @@ internal static class Ui
         return u == 0 ? v.ToString("0") : v.ToString(Math.Abs(v) < 10 ? "0.00" : Math.Abs(v) < 100 ? "0.0" : "0") + units[u];
     }
 
+    /// <summary>45.2s, 12:34, 2h 18m, 3d 4h.</summary>
     public static string Time(float seconds)
     {
-        int t = Mathf.FloorToInt(seconds);
-        return t >= 60 ? $"{t / 60}:{t % 60:00}" : $"{seconds:0.0}s";
+        if (seconds < 60f) return $"{seconds:0.0}s";
+        long t = (long)seconds;
+        if (t < 3600) return $"{t / 60}:{t % 60:00}";
+        if (t < 86400) return $"{t / 3600}h {t % 3600 / 60}m";
+        return $"{t / 86400}d {t % 86400 / 3600}h";
     }
 
     /// <summary>

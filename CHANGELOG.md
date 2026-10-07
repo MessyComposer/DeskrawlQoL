@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.3.1
+
+- Gold / XP: the time-to-level row showed your current level instead of the next one.
+- Gold / XP: switching characters no longer counts the other character's level and XP as a gain.
+- Durations are shown as hours and days (`2h 18m`, `3d 4h`) instead of minutes like `138:14`.
+- Incoming damage: the panel's background now fits its content, with padding at the bottom.
+
 ## 1.3.0
 
 - New: **Settings panel** (`Alt+Q`). Show or hide each view, switch their options, change the font size and reset metrics, all in one place.
