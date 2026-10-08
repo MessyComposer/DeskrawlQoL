@@ -40,7 +40,10 @@ internal static class GoldXpOverlay
         double hours = Math.Max(elapsed, 1f) / 3600.0;
         double xpPerHour = S.XpGained / hours;
 
-        var panel = new Rect(x, y, width, 6 * line + 8);
+        // Level row until the level cap, then the paragon row (paragon XP is only earned at the cap).
+        bool showLevel = !S.AtLevelCap, showParagon = S.AtLevelCap && S.ParagonActive;
+        int rows = 4 + (showLevel ? 1 : 0) + (showParagon ? 1 : 0);
+        var panel = new Rect(x, y, width, rows * line + 8);
         ClickThrough.Block(Drag.IsDragging ? new Rect(0, 0, Screen.width, Screen.height) : panel);
         GUI.Label(panel, "", _bg);
 
@@ -52,14 +55,15 @@ internal static class GoldXpOverlay
         Row(ref cy, cx, cw, line, "Gold / hour", Ui.Num(S.GoldGained / hours));
         Row(ref cy, cx, cw, line, "XP / hour", Ui.Num(xpPerHour));
         Row(ref cy, cx, cw, line, $"Gained: {Ui.Num(S.GoldGained)} gold", $"{Ui.Num(S.XpGained)} XP");
-        Row(ref cy, cx, cw, line, $"Level {S.Level + 1} in", TimeToLevel(xpPerHour));
+        if (showLevel) Row(ref cy, cx, cw, line, $"Level {S.Level + 1} in", TimeTo(S.XpToLevel, S.CurrentXp, xpPerHour));
+        if (showParagon) Row(ref cy, cx, cw, line, $"Paragon {S.ParagonLevel + 1} in", TimeTo(S.ParagonNeeded, S.ParagonXp, xpPerHour));
         Row(ref cy, cx, cw, line, "Session", Ui.Time(elapsed));
     }
 
-    private static string TimeToLevel(double xpPerHour)
+    private static string TimeTo(long needed, long current, double xpPerHour)
     {
-        long remaining = S.XpToLevel - S.CurrentXp;
-        if (S.XpToLevel <= 0 || remaining <= 0 || xpPerHour <= 0) return "-";
+        long remaining = needed - current;
+        if (needed <= 0 || remaining <= 0 || xpPerHour <= 0) return "-";
         return Ui.Time((float)(remaining / xpPerHour * 3600.0));
     }
 
