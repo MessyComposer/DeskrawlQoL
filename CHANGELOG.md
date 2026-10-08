@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.3.2
+
+- Gold / XP: at the level cap, XP/hour counts paragon XP, and the panel shows the time to your next paragon level ("Paragon N in").
+
 ## 1.3.1
 
 - Gold / XP: the time-to-level row showed your current level instead of the next one.

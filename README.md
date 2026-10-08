@@ -33,7 +33,7 @@ What's hurting you, to help decide which defences to invest in.
 A small panel with **gold/hour**, **XP/hour**, gold and XP gained this session, and an estimate of the **time to your next level** at the current rate.
 
 - Gold counts income only. Spending doesn't lower it. Selling items and offline rewards count as income, so start a new session after collecting offline rewards for a clean rate.
-- XP is counted correctly across level-ups.
+- XP is counted correctly across level-ups. At the level cap, it counts paragon XP and shows the time to your next **paragon level** instead.
 - Rates use real time since the session started, so time spent in menus or paused counts too.
 
 ### Boss HP numbers

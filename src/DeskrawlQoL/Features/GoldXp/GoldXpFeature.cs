@@ -77,16 +77,45 @@ internal sealed class GoldXpFeature : IFeature
         float now = Time.realtimeSinceStartup;
         if (SessionStart < 0f) SessionStart = now;
 
+        // At the level cap, XP goes to paragon levels instead (Player.CurrentXP stops changing).
+        bool atCap = _xpForLevel != null && SafeXpFor(level) <= 0;
+        bool paragon = Paragon.TryRead(atCap, out int pLevel, out long pXp, out long pNeeded);
+
         if (_havePrev)
         {
             if (gold > _prevGold) GoldGained += gold - _prevGold; // spending is ignored
             XpGained += XpGain(_prevLevel, _prevXp, level, xp);
+            if (paragon && _prevParagon) XpGained += ParagonGain(pLevel, pXp);
         }
         _prevGold = gold; _prevXp = xp; _prevLevel = level; _havePrev = true;
+        _prevParagon = paragon;
+        if (paragon) { _prevPLevel = pLevel; _prevPXp = pXp; _prevPNeeded = pNeeded; }
 
         Level = level;
+        AtLevelCap = atCap;
         CurrentXp = xp;
         XpToLevel = _xpForLevel != null ? SafeXpFor(level) : 0;
+        ParagonActive = paragon;
+        ParagonLevel = pLevel;
+        ParagonXp = pXp;
+        ParagonNeeded = pNeeded;
+    }
+
+    private static bool _prevParagon;
+    private static int _prevPLevel;
+    private static long _prevPXp, _prevPNeeded;
+    internal static bool ParagonActive, AtLevelCap;
+    internal static int ParagonLevel;
+    internal static long ParagonXp, ParagonNeeded;
+
+    /// <summary>Paragon XP gained since the last reading, including across a paragon level-up.</summary>
+    private static long ParagonGain(int level, long xp)
+    {
+        if (level == _prevPLevel) return Math.Max(0, xp - _prevPXp);
+        if (level < _prevPLevel) return 0;
+        // Rest of the previous paragon level, plus progress in the new one. (Multiple paragon levels in a
+        // single frame would undercount; the XP needed for the skipped levels isn't known.)
+        return Math.Max(0, _prevPNeeded - _prevPXp) + xp;
     }
 
     public void OnGUI() => GoldXpOverlay.OnGUI();
