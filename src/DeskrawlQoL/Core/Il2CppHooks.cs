@@ -45,6 +45,9 @@ internal static unsafe class Il2CppHooks
     private static IntPtr MethodInfoPtr(MethodInfo m) =>
         (IntPtr)Il2CppInteropUtils.GetIl2CppMethodInfoPointerFieldForGeneratedMethod(m).GetValue(null);
 
+    /// <summary>The method's native code. Call before hooking it with <see cref="HookMethodInfo{T}"/>.</summary>
+    public static IntPtr NativeCode(MethodInfo m) => *(IntPtr*)MethodInfoPtr(m);
+
     [DllImport("kernel32.dll")]
     private static extern bool VirtualProtect(IntPtr addr, UIntPtr size, uint newProtect, out uint oldProtect);
 
@@ -79,11 +82,52 @@ internal static unsafe class Il2CppHooks
     /// </summary>
     public static T HookVirtual<T>(MethodInfo m, T hook) where T : Delegate
     {
+        KeepAlive.Add(hook);
+        return HookVirtual<T>(m, Marshal.GetFunctionPointerForDelegate(hook));
+    }
+
+    /// <summary>
+    /// As <see cref="HookVirtual{T}(MethodInfo, T)"/>, and also records each call's return address (an
+    /// address inside the calling game function) in <paramref name="returnAddress"/>, which the hook reads
+    /// on entry. Managed code can't see its native caller otherwise: the OS stack walk stops at the
+    /// managed frames.
+    /// </summary>
+    public static T HookVirtual<T>(MethodInfo m, T hook, out IntPtr* returnAddress) where T : Delegate
+    {
+        KeepAlive.Add(hook);
+        return HookVirtual<T>(m, CallerTrampoline(Marshal.GetFunctionPointerForDelegate(hook), out returnAddress));
+    }
+
+    [DllImport("kernel32.dll")]
+    private static extern IntPtr VirtualAlloc(IntPtr addr, UIntPtr size, uint type, uint protect);
+
+    /// <summary>Native stub that stores its return address in a slot, then jumps to <paramref name="target"/>.</summary>
+    private static IntPtr CallerTrampoline(IntPtr target, out IntPtr* slot)
+    {
+        byte* code = (byte*)VirtualAlloc(IntPtr.Zero, (UIntPtr)64, 0x3000 /* MEM_COMMIT | MEM_RESERVE */, 0x40 /* PAGE_EXECUTE_READWRITE */);
+        if (code == null) throw new InvalidOperationException("VirtualAlloc failed.");
+        slot = (IntPtr*)(code + 48);
+        *slot = IntPtr.Zero;
+        // r10/r11 are scratch registers that don't carry arguments, so the hook gets the call unchanged.
+        byte[] stub =
+        {
+            0x4C, 0x8B, 0x1C, 0x24,             // mov r11, [rsp]
+            0x49, 0xBA, 0, 0, 0, 0, 0, 0, 0, 0, // mov r10, slot
+            0x4D, 0x89, 0x1A,                   // mov [r10], r11
+            0x49, 0xBB, 0, 0, 0, 0, 0, 0, 0, 0, // mov r11, target
+            0x41, 0xFF, 0xE3,                   // jmp r11
+        };
+        Marshal.Copy(stub, 0, (IntPtr)code, stub.Length);
+        *(long*)(code + 6) = (long)slot;
+        *(long*)(code + 19) = (long)target;
+        return (IntPtr)code;
+    }
+
+    private static T HookVirtual<T>(MethodInfo m, IntPtr hookPtr) where T : Delegate
+    {
         var baseType = m.DeclaringType;
         IntPtr mi = MethodInfoPtr(m);
         IntPtr orig = *(IntPtr*)mi;
-        IntPtr hookPtr = Marshal.GetFunctionPointerForDelegate(hook);
-        KeepAlive.Add(hook);
 
         var pending = new List<(string name, IntPtr klass)>();
         foreach (var t in baseType.Assembly.GetTypes().Where(t => baseType.IsAssignableFrom(t)))

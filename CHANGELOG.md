@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.4.0
+
+- New: **Keep menus open**. Menus you opened (inventory, talents, paragon...) stay open when the stage changes or you die. Esc still closes them.
+
 ## 1.3.2
 
 - Gold / XP: at the level cap, XP/hour counts paragon XP, and the panel shows the time to your next paragon level ("Paragon N in").

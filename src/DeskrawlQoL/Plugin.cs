@@ -9,6 +9,7 @@ using DeskrawlQoL.Features.BossHp;
 using DeskrawlQoL.Features.DpsMeter;
 using DeskrawlQoL.Features.GoldXp;
 using DeskrawlQoL.Features.IncomingDamage;
+using DeskrawlQoL.Features.KeepMenusOpen;
 
 namespace DeskrawlQoL;
 
@@ -17,7 +18,7 @@ public class Plugin : BasePlugin
 {
     public const string Guid = "deskrawl.qol";
     public const string Name = "Deskrawl QoL";
-    public const string Version = "1.3.2";
+    public const string Version = "1.4.0";
 
     internal static ManualLogSource L;
     internal static readonly List<IFeature> Features = new();
@@ -28,7 +29,7 @@ public class Plugin : BasePlugin
         Settings.Bind(Config);
 
         // Register new features here. Their order is the order of their sections in the settings panel.
-        var all = new IFeature[] { new DpsMeterFeature(), new IncomingDamageFeature(), new GoldXpFeature(), new BossHpFeature() };
+        var all = new IFeature[] { new DpsMeterFeature(), new IncomingDamageFeature(), new GoldXpFeature(), new BossHpFeature(), new KeepMenusOpenFeature() };
 
         foreach (var f in all)
         {

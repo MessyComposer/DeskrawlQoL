@@ -40,6 +40,10 @@ A small panel with **gold/hour**, **XP/hour**, gold and XP gained this session, 
 
 Shows the boss's HP as numbers on the boss health bar, e.g. `12.3M / 45.6M (27%)`. The game's bar otherwise only has a fill. The format is configurable (`[BossHp] Format`, placeholders `{current}`, `{max}`, `{percent}`).
 
+### Keep menus open
+
+Menus you opened, like the inventory, talents or paragon panel, stay open when the stage changes and when you die. Esc still closes them all. Town-only menus and NPC windows (merchant, storage...) still close when you leave town. Turn it off with "Keep menus open" in the settings panel.
+
 ## Install
 
 1. Download `DeskrawlQoL-vX.Y.Z.zip` from the releases page.
@@ -65,7 +69,7 @@ Most settings are in the in-game settings panel (`Alt+Q`). Everything is also in
 
 - `[General]` holds the settings panel hotkey, the font size and the settings panel position.
 - `[Features]` turns each feature on or off completely (takes effect on the next launch).
-- `[DpsMeter]`, `[DpsMeter.Overlay]`, `[IncomingDamage]`, `[GoldXp]` and `[BossHp]` hold each view's options and panel positions, plus extras not in the panel, like combat timeouts and the boss HP text format.
+- `[DpsMeter]`, `[DpsMeter.Overlay]`, `[IncomingDamage]`, `[GoldXp]`, `[BossHp]` and `[KeepMenusOpen]` hold each view's options and panel positions, plus extras not in the panel, like combat timeouts and the boss HP text format.
 - **Optional direct hotkeys:** `[DpsMeter]` and `[GoldXp]` have unbound hotkeys for showing or resetting their views without opening the settings panel. They use the format `Alt+P`, `Ctrl+Shift+M` or `Alt+1`.
 - **Pick hotkeys the game doesn't use.** The game ignores Ctrl/Shift/Alt, so `Alt+R` would also trigger its R action (return to town). On startup the mod lists the game's keys in `BepInEx\LogOutput.log` (`Game keys: ...`) and warns about any conflicting hotkey. Keys in use: WASD, arrow keys, C, E, I, J, L, M, R, T, 1, 2, Space, Enter, Shift, Esc, plus your boss key.
 
