@@ -44,6 +44,13 @@ Shows the boss's HP as numbers on the boss health bar, e.g. `12.3M / 45.6M (27%)
 
 Menus you opened, like the inventory, talents or paragon panel, stay open when the stage changes and when you die. Esc still closes them all. Town-only menus and NPC windows (merchant, storage...) still close when you leave town. Turn it off with "Keep menus open" in the settings panel.
 
+### Auto-run
+
+- **Auto-run countdown**: how many seconds the game's auto-run waits on the stage-complete and mythic rift completion screens before it reruns or moves on (0 = instantly, up to 8; default 3). Combined with the game's *Next Stage* auto-run mode, `0` goes straight to the next stage. It works with the *Rerun* mode too. It only ever shortens the game's countdown, never lengthens it.
+- **Auto next tier**: the game's *Next Stage* auto-run mode doesn't work in mythic rifts: there it only reruns the same tier. This adds an **Auto next tier** toggle above the auto-rerun toggle on the mythic rift completion screen. When it's on and the next tier is available, the screen counts down (shown on the toggle) and moves on to the next tier. If there's no next tier, the game's auto-rerun works as usual. It's off by default.
+
+Both are in the settings panel; the toggle can also be switched on the completion screen.
+
 ## Install
 
 1. Download `DeskrawlQoL-vX.Y.Z.zip` from the releases page.
@@ -69,7 +76,7 @@ Most settings are in the in-game settings panel (`Alt+Q`). Everything is also in
 
 - `[General]` holds the settings panel hotkey, the font size and the settings panel position.
 - `[Features]` turns each feature on or off completely (takes effect on the next launch).
-- `[DpsMeter]`, `[DpsMeter.Overlay]`, `[IncomingDamage]`, `[GoldXp]`, `[BossHp]` and `[KeepMenusOpen]` hold each view's options and panel positions, plus extras not in the panel, like combat timeouts and the boss HP text format.
+- `[DpsMeter]`, `[DpsMeter.Overlay]`, `[IncomingDamage]`, `[GoldXp]`, `[BossHp]`, `[KeepMenusOpen]` and `[AutoRun]` hold each view's options and panel positions, plus extras not in the panel, like combat timeouts and the boss HP text format.
 - **Optional direct hotkeys:** `[DpsMeter]` and `[GoldXp]` have unbound hotkeys for showing or resetting their views without opening the settings panel. They use the format `Alt+P`, `Ctrl+Shift+M` or `Alt+1`.
 - **Pick hotkeys the game doesn't use.** The game ignores Ctrl/Shift/Alt, so `Alt+R` would also trigger its R action (return to town). On startup the mod lists the game's keys in `BepInEx\LogOutput.log` (`Game keys: ...`) and warns about any conflicting hotkey. Keys in use: WASD, arrow keys, C, E, I, J, L, M, R, T, 1, 2, Space, Enter, Shift, Esc, plus your boss key.
 

@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.5.0
+
+- New: **Auto next tier**. A toggle on the mythic rift completion screen that moves on to the next tier after the auto-run countdown. The game's own "Next Stage" auto-run mode only reruns the same tier in mythic rifts.
+- New: **Auto-run countdown** setting (0-8 s, 0 = instant) for the game's auto-run on the stage-complete and mythic rift completion screens. Works with both the "Rerun" and "Next Stage" modes; with "Next Stage" and 0 s, you go straight to the next stage.
+
 ## 1.4.0
 
 - New: **Keep menus open**. Menus you opened (inventory, talents, paragon...) stay open when the stage changes or you die. Esc still closes them.

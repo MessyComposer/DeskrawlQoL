@@ -5,6 +5,7 @@ using BepInEx.Configuration;
 using BepInEx.Logging;
 using BepInEx.Unity.IL2CPP;
 using DeskrawlQoL.Core;
+using DeskrawlQoL.Features.AutoRun;
 using DeskrawlQoL.Features.BossHp;
 using DeskrawlQoL.Features.DpsMeter;
 using DeskrawlQoL.Features.GoldXp;
@@ -18,7 +19,7 @@ public class Plugin : BasePlugin
 {
     public const string Guid = "deskrawl.qol";
     public const string Name = "Deskrawl QoL";
-    public const string Version = "1.4.0";
+    public const string Version = "1.5.0";
 
     internal static ManualLogSource L;
     internal static readonly List<IFeature> Features = new();
@@ -29,7 +30,7 @@ public class Plugin : BasePlugin
         Settings.Bind(Config);
 
         // Register new features here. Their order is the order of their sections in the settings panel.
-        var all = new IFeature[] { new DpsMeterFeature(), new IncomingDamageFeature(), new GoldXpFeature(), new BossHpFeature(), new KeepMenusOpenFeature() };
+        var all = new IFeature[] { new DpsMeterFeature(), new IncomingDamageFeature(), new GoldXpFeature(), new BossHpFeature(), new KeepMenusOpenFeature(), new AutoRunFeature() };
 
         foreach (var f in all)
         {
